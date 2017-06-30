@@ -269,7 +269,7 @@ class FloatingActionButtonCoordinator {
         }
 
         private void setVisibility(FloatingActionButtonWrapper child) {
-            child.setVisibility(child.getAlpha() == 0 ? View.GONE : View.VISIBLE);
+            child.setVisibility(child.getAlpha() < 0.1 ? View.GONE : View.VISIBLE);
         }
 
         private float calculateAlpha(float fraction) {
