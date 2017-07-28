@@ -35,9 +35,12 @@ this.props.navigator.setStyle({
 {
   // Common
   navBarTextColor: '#000000', // change the text color of the title (remembered across pushes)
+  navBarTextFontSize: 18, // change the font size of the title
   navBarTextFontFamily: 'font-name', // Changes the title font
   navBarBackgroundColor: '#f7f7f7', // change the background color of the nav bar (remembered across pushes)
-
+  navBarCustomView: 'example.CustomTopBar', // registered component name
+  navBarComponentAlignment: 'center', // center/fill
+  navBarCustomViewInitialProps: {}, // Serializable JSON passed as props
   navBarButtonColor: '#007aff', // Change color of nav bar buttons (eg. the back button) (remembered across pushes)
 
   navBarHidden: false, // make the nav bar hidden
