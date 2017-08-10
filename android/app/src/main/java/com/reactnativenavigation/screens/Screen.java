@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
 
@@ -23,6 +24,7 @@ import com.reactnativenavigation.params.BaseScreenParams;
 import com.reactnativenavigation.params.ContextualMenuParams;
 import com.reactnativenavigation.params.FabParams;
 import com.reactnativenavigation.params.ScreenParams;
+import com.reactnativenavigation.params.StatusBarTextColorScheme;
 import com.reactnativenavigation.params.StyleParams;
 import com.reactnativenavigation.params.TitleBarButtonParams;
 import com.reactnativenavigation.params.TitleBarLeftButtonParams;
@@ -104,6 +106,7 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
 
     public void setStyle() {
         setStatusBarColor(styleParams.statusBarColor);
+        setStatusBarTextColorScheme(styleParams.statusBarTextColorScheme);
         setNavigationBarColor(styleParams.navigationBarColor);
         topBar.setStyle(styleParams);
         if (styleParams.screenBackgroundColor.hasColor()) {
@@ -130,7 +133,7 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
         if (screenParams.styleParams.hasTopBarCustomComponent()) {
             topBar.setReactView(screenParams.styleParams);
         } else {
-            topBar.setTitle(screenParams.title);
+            topBar.setTitle(screenParams.title, styleParams);
             topBar.setSubtitle(screenParams.subtitle);
         }
     }
@@ -172,6 +175,25 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
+    private void setStatusBarTextColorScheme(StatusBarTextColorScheme textColorScheme) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+        if (StatusBarTextColorScheme.Dark.equals(textColorScheme)) {
+            int flags = getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            setSystemUiVisibility(flags);
+        } else {
+            clearLightStatusBar();
+        }
+    }
+
+    public void clearLightStatusBar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+        int flags = getSystemUiVisibility();
+        flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+        setSystemUiVisibility(flags);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void setNavigationBarColor(StyleParams.Color navigationBarColor) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return;
@@ -207,7 +229,7 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
     }
 
     public void setTitleBarTitle(String title) {
-        topBar.setTitle(title);
+       topBar.setTitle(title, styleParams);
     }
 
     public void setTitleBarSubtitle(String subtitle) {
@@ -252,28 +274,28 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
     public abstract void setOnDisplayListener(OnDisplayListener onContentViewDisplayedListener);
 
     public void show(NavigationType type) {
-        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(screenParams, type);
-        NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(screenParams, type);
+        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(getScreenParams(), type);
+        NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(getScreenParams(), type);
         screenAnimator.show(screenParams.animateScreenTransitions);
     }
 
     public void show(boolean animated, final NavigationType type) {
-        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(screenParams, type);
+        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(getScreenParams(), type);
         screenAnimator.show(animated, new Runnable() {
             @Override
             public void run() {
-                NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(screenParams, type);
+                NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(getScreenParams(), type);
             }
         });
     }
 
     public void show(boolean animated, final Runnable onAnimationEnd, final NavigationType type) {
-        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(screenParams, type);
+        NavigationApplication.instance.getEventEmitter().sendWillAppearEvent(getScreenParams(), type);
         setStyle();
         screenAnimator.show(animated, new Runnable() {
             @Override
             public void run() {
-                NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(screenParams, type);
+                NavigationApplication.instance.getEventEmitter().sendDidAppearEvent(getScreenParams(), type);
                 if (onAnimationEnd != null) onAnimationEnd.run();
             }
         });
@@ -322,11 +344,11 @@ public abstract class Screen extends RelativeLayout implements Subscriber {
     }
 
     private void hide(boolean animated, final Runnable onAnimatedEnd, final NavigationType type) {
-        NavigationApplication.instance.getEventEmitter().sendWillDisappearEvent(screenParams, type);
+        NavigationApplication.instance.getEventEmitter().sendWillDisappearEvent(getScreenParams(), type);
         screenAnimator.hide(animated, new Runnable() {
             @Override
             public void run() {
-                NavigationApplication.instance.getEventEmitter().sendDidDisappearEvent(screenParams, type);
+                NavigationApplication.instance.getEventEmitter().sendDidDisappearEvent(getScreenParams(), type);
                 if (onAnimatedEnd != null) onAnimatedEnd.run();
             }
         });
