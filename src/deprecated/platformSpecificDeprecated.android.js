@@ -148,6 +148,8 @@ function convertStyleParams(originalStyleObject) {
     topBarTranslucent: originalStyleObject.navBarTranslucent,
     topBarElevationShadowEnabled: originalStyleObject.topBarElevationShadowEnabled,
     topBarCollapseOnScroll: originalStyleObject.topBarCollapseOnScroll,
+    topBarBorderColor: processColor(originalStyleObject.topBarBorderColor),
+    topBarBorderWidth: originalStyleObject.topBarBorderWidth && `${originalStyleObject.topBarBorderWidth}`,
     collapsingToolBarImage: originalStyleObject.collapsingToolBarImage,
     collapsingToolBarComponent: originalStyleObject.collapsingToolBarComponent,
     collapsingToolBarComponentHeight: originalStyleObject.collapsingToolBarComponentHeight,
@@ -163,7 +165,9 @@ function convertStyleParams(originalStyleObject) {
     titleBarDisabledButtonColor: processColor(originalStyleObject.titleBarDisabledButtonColor),
     titleBarTitleFontFamily: originalStyleObject.navBarTextFontFamily,
     titleBarTitleFontSize: originalStyleObject.navBarTextFontSize,
+    titleBarTitleFontBold: originalStyleObject.navBarTextFontBold,
     titleBarTitleTextCentered: originalStyleObject.navBarTitleTextCentered,
+    titleBarHeight: originalStyleObject.navBarHeight,
     backButtonHidden: originalStyleObject.backButtonHidden,
     topTabsHidden: originalStyleObject.topTabsHidden,
     contextualMenuStatusBarColor: processColor(originalStyleObject.contextualMenuStatusBarColor),
@@ -179,10 +183,12 @@ function convertStyleParams(originalStyleObject) {
     selectedTopTabIndicatorHeight: originalStyleObject.selectedTopTabIndicatorHeight,
     selectedTopTabIndicatorColor: processColor(originalStyleObject.selectedTopTabIndicatorColor),
     topTabsScrollable: originalStyleObject.topTabsScrollable,
+    topTabsHeight: originalStyleObject.topTabsHeight,
     screenBackgroundColor: processColor(originalStyleObject.screenBackgroundColor),
 
     drawScreenAboveBottomTabs: !originalStyleObject.drawUnderTabBar,
 
+    initialTabIndex: originalStyleObject.initialTabIndex,
     bottomTabsColor: processColor(originalStyleObject.tabBarBackgroundColor),
     bottomTabsButtonColor: processColor(originalStyleObject.tabBarButtonColor),
     bottomTabsSelectedButtonColor: processColor(originalStyleObject.tabBarSelectedButtonColor),
@@ -194,6 +200,10 @@ function convertStyleParams(originalStyleObject) {
     bottomTabFontFamily: originalStyleObject.tabFontFamily,
 
     navigationBarColor: processColor(originalStyleObject.navigationBarColor)
+  };
+
+  if (originalStyleObject.disabledButtonColor) {
+    ret.titleBarDisabledButtonColor = processColor(originalStyleObject.disabledButtonColor);
   }
 
   if (originalStyleObject.collapsingToolBarImage) {
@@ -313,6 +323,9 @@ function navigatorSetButtons(navigator, navigatorEventID, _params) {
           button.icon = icon.uri;
         }
       }
+      if (button.buttonColor) {
+        button.color = processColor(button.buttonColor);
+      }
     });
   }
   let leftButton = getLeftButton(params);
@@ -322,6 +335,9 @@ function navigatorSetButtons(navigator, navigatorEventID, _params) {
       if (icon) {
         leftButton.icon = icon.uri;
       }
+    }
+    if (leftButton.buttonColor) {
+      leftButton.color = processColor(leftButton.buttonColor);
     }
   } else if (shouldRemoveLeftButton(params)) {
     leftButton = {};
@@ -508,6 +524,9 @@ function addNavigatorButtons(screen, sideMenuParams) {
           button.icon = icon.uri;
         }
       }
+      if (button.buttonColor) {
+        button.color = processColor(button.buttonColor);
+      }
     });
   }
 
@@ -518,6 +537,9 @@ function addNavigatorButtons(screen, sideMenuParams) {
       if (icon) {
         leftButton.icon = icon.uri;
       }
+    }
+    if (leftButton.buttonColor) {
+      leftButton.color = processColor(leftButton.buttonColor);
     }
   }
 
