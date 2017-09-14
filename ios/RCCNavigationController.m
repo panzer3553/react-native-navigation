@@ -55,12 +55,6 @@ NSString const *CALLBACK_ASSOCIATED_ID = @"RCCNavigationController.CALLBACK_ASSO
   if (!self) return nil;
   self.delegate = self;
 
-  self.navigationBar.translucent = NO; // default
-  self.navigationBar.layer.shadowColor = [[UIColor grayColor] CGColor];
-  self.navigationBar.layer.shadowOffset = CGSizeMake(1.0f, 1.0f);
-  self.navigationBar.layer.shadowRadius = 2.0f;
-  self.navigationBar.layer.shadowOpacity = 0.2f;
-
   [self processTitleView:viewController
                    props:props
                    style:navigatorStyle];
