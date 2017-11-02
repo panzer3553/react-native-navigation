@@ -34,7 +34,7 @@ public class LightBox extends Dialog implements DialogInterface.OnDismissListene
     public LightBox(AppCompatActivity activity, Runnable onDismissListener, LightBoxParams params) {
         super(activity, R.style.LightBox);
         this.onDismissListener = onDismissListener;
-        this.cancelable =!params.overrideBackPress; 
+        this.cancelable =!params.overrideBackPress;
         setOnDismissListener(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         createContent(activity, params);
@@ -107,7 +107,7 @@ public class LightBox extends Dialog implements DialogInterface.OnDismissListene
     }
 
     public void destroy() {
-        content.unmountReactView();
+        // content.unmountReactView();
         dismiss();
     }
 
