@@ -27,7 +27,10 @@ class Navigator {
   }
 
   _checkLastAction(params) {
-    if (Date.now() - this._lastAction.timestamp < 1000 && !params.force) {
+    if (
+      Date.now() - this._lastAction.timestamp < 1000 &&
+      _.isEqual(params, this._lastAction.params)
+    ) {
       return false;
     } else {
       this._lastAction = { params, timestamp: Date.now() };
@@ -39,7 +42,6 @@ class Navigator {
     if (
       !this._checkLastAction({
         method: "push",
-        passProps: params.passProps,
         screen: params.screen
       })
     ) {
@@ -61,10 +63,26 @@ class Navigator {
   }
 
   showModal(params = {}) {
+    if (
+      !this._checkLastAction({
+        method: "showModal",
+        screen: params.screen
+      })
+    ) {
+      return;
+    }
     return Navigation.showModal(params);
   }
 
   showLightBox(params = {}) {
+    if (
+      !this._checkLastAction({
+        method: "showLightBox",
+        screen: params.screen
+      })
+    ) {
+      return;
+    }
     return Navigation.showLightBox(params);
   }
 
